@@ -72,7 +72,33 @@ class PossibleMoves
   end
 
   def possible_for_bishop(start_position, hash)
-
+    positions_array = []
+    color = 'white' if there_is_white?(start_position, hash)
+    up_left = (start_position[0].to_i + 1).to_s + (start_position[1].ord - 1).chr
+    loop do
+      positions_array << up_left if empty_or_enemy_there?(up_left, hash, color)
+      break if enemy_or_not_empty_there?(up_left, hash, color)
+      up_left = (up_left[0].to_i + 1).to_s + (up_left[1].ord - 1).chr
+    end
+    up_right = (start_position[0].to_i + 1).to_s + (start_position[1].ord + 1).chr
+    loop do
+      positions_array << up_right if empty_or_enemy_there?(up_right, hash, color)
+      break if enemy_or_not_empty_there?(up_right, hash, color)
+      up_right = (up_right[0].to_i + 1).to_s + (up_right[1].ord + 1).chr
+    end
+    down_left = (start_position[0].to_i - 1).to_s + (start_position[1].ord - 1).chr
+    loop do
+      positions_array << down_left if empty_or_enemy_there?(down_left, hash, color)
+      break if enemy_or_not_empty_there?(down_left, hash, color)
+      down_left = (down_left[0].to_i - 1).to_s + (down_left[1].ord - 1).chr
+    end
+    down_right = (start_position[0].to_i - 1).to_s + (start_position[1].ord + 1).chr
+    loop do
+      positions_array << down_right if empty_or_enemy_there?(down_right, hash, color)
+      break if enemy_or_not_empty_there?(down_right, hash, color)
+      down_right = (down_right[0].to_i - 1).to_s + (down_right[1].ord + 1).chr
+    end
+    positions_array
   end
 
   def possible_for_queen(start_position, hash)
