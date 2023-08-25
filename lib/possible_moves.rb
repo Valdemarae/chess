@@ -1,5 +1,3 @@
-require_relative 'board'
-
 class PossibleMoves
   def possible_for_pawn(start_position, hash)
     positions_array = []
