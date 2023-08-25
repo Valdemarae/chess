@@ -24,6 +24,7 @@ class Board
     add_bishop(hash)
     add_queen(hash)
     add_king(hash)
+    hash
   end
 
   def add_pawn(hash)
@@ -65,5 +66,17 @@ class Board
   def add_king(hash)
     hash['1e'] = '♔'
     hash['8e'] = '♚'
+  end
+
+  def print_board
+    puts '  a  b  c  d  e  f  g  h'
+    8.downto(1) do |i|
+      print i
+      for j in 'a'..'h' do
+        print "[#{@board_hash[i.to_s + j]}]"
+      end
+      puts i
+    end
+    puts '  a  b  c  d  e  f  g  h'
   end
 end
