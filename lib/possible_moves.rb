@@ -57,7 +57,18 @@ class PossibleMoves
   end
 
   def possible_for_knight(start_position, hash)
-
+    color = 'white' if there_is_white?(start_position, hash)
+    position_number = start_position[0].to_i
+    position_char_order = start_position[1].ord
+    a = (position_number + 2).to_s + (position_char_order - 1).chr
+    b = (position_number + 2).to_s + (position_char_order + 1).chr
+    c = (position_number - 2).to_s + (position_char_order - 1).chr
+    d = (position_number - 2).to_s + (position_char_order + 1).chr
+    e = (position_number + 1).to_s + (position_char_order - 2).chr
+    f = (position_number - 1).to_s + (position_char_order - 2).chr
+    g = (position_number + 1).to_s + (position_char_order + 2).chr
+    h = (position_number - 1).to_s + (position_char_order + 2).chr
+    [a,b,c,d,e,f,g,h].filter {|i| empty_or_enemy_there?(i, hash, color)}
   end
 
   def possible_for_bishop(start_position, hash)
@@ -116,6 +127,3 @@ class PossibleMoves
     there_is_enemy?(position, hash, color) || !position_empty?(position, hash)
   end
 end
-
-p PossibleMoves.new.possible_for_pawn('6d', Board.new.board_hash)
-p PossibleMoves.new.possible_for_rook('5c', Board.new.board_hash)
