@@ -8,7 +8,7 @@ class PossibleMoves
       positions_array << one_up if position_empty?(one_up, hash)
 
       two_up = (start_position[0].to_i + 2).to_s + start_position[1]
-      positions_array << two_up if position_empty?(one_up, hash) && position_empty?(two_up, hash) && first_move?(start_position)
+      positions_array << two_up if position_empty?(one_up, hash) && position_empty?(two_up, hash) && first_move?(start_position, hash)
 
       diagonal_up_left = (start_position[0].to_i + 1).to_s + (start_position[1].ord - 1).chr
       positions_array << diagonal_up_left if there_is_black?(diagonal_up_left, hash)
@@ -20,7 +20,7 @@ class PossibleMoves
       positions_array << one_down if position_empty?(one_down, hash)
 
       two_down = (start_position[0].to_i - 2).to_s + start_position[1]
-      positions_array << two_down if position_empty?(one_down, hash) && position_empty?(two_down, hash) && first_move?(start_position)
+      positions_array << two_down if position_empty?(one_down, hash) && position_empty?(two_down, hash) && first_move?(start_position, hash)
 
       diagonal_down_left = (start_position[0].to_i - 1).to_s + (start_position[1].ord - 1).chr
       positions_array << diagonal_down_left if there_is_white?(diagonal_down_left, hash)
@@ -67,8 +67,8 @@ class PossibleMoves
     false
   end
 
-  def first_move?(position)
-    if pawn_color_white?(position)
+  def first_move?(position, hash)
+    if pawn_color_white?(position, hash)
       return true if position[0] == '2'
     else
       return true if position[0] == '7'
@@ -84,3 +84,5 @@ class PossibleMoves
     hash[position] == '♔' || hash[position] == '♕' || hash[position] == '♖' || hash[position] == '♗' || hash[position] == '♘' || hash[position] == '♙'
   end
 end
+
+p PossibleMoves.new.possible_for_pawn('7d', Board.new.board_hash)
