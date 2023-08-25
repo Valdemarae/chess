@@ -106,7 +106,18 @@ class PossibleMoves
   end
 
   def possible_for_king(start_position, hash)
-
+    color = 'white' if there_is_white?(start_position, hash)
+    position_number = start_position[0].to_i
+    position_char_order = start_position[1].ord
+    a = (position_number + 1).to_s + (position_char_order - 1).chr
+    b = (position_number + 1).to_s + start_position[1]
+    c = (position_number + 1).to_s + (position_char_order + 1).chr
+    d = start_position[0] + (position_char_order - 1).chr
+    e = start_position[0] + (position_char_order + 1).chr
+    f = (position_number - 1).to_s + (position_char_order - 1).chr
+    g = (position_number - 1).to_s + start_position[1]
+    h = (position_number - 1).to_s + (position_char_order + 1).chr
+    [a,b,c,d,e,f,g,h].filter {|i| empty_or_enemy_there?(i, hash, color)}
   end
 
   private
