@@ -118,6 +118,14 @@ class PossibleMoves
     [a,b,c,d,e,f,g,h].filter {|i| empty_or_enemy_there?(i, hash, color)}
   end
 
+  def there_is_black?(position, hash)
+    hash[position] == '♚' || hash[position] == '♛' || hash[position] == '♜' || hash[position] == '♝' || hash[position] == '♞' || hash[position] == '♟︎'
+  end
+
+  def there_is_white?(position, hash)
+    hash[position] == '♔' || hash[position] == '♕' || hash[position] == '♖' || hash[position] == '♗' || hash[position] == '♘' || hash[position] == '♙'
+  end
+
   private
 
   def position_empty?(position, hash)
@@ -140,14 +148,6 @@ class PossibleMoves
     else
       return there_is_white?(position, hash)
     end
-  end
-
-  def there_is_black?(position, hash)
-    hash[position] == '♚' || hash[position] == '♛' || hash[position] == '♜' || hash[position] == '♝' || hash[position] == '♞' || hash[position] == '♟︎'
-  end
-
-  def there_is_white?(position, hash)
-    hash[position] == '♔' || hash[position] == '♕' || hash[position] == '♖' || hash[position] == '♗' || hash[position] == '♘' || hash[position] == '♙'
   end
 
   def possible_double_for_pawn(start_position, changed_height_by_one, changed_height_by_two, hash)
