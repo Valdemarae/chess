@@ -3,7 +3,8 @@ require_relative 'board'
 class PossibleMoves
   def possible_for_pawn(start_position, hash)
     positions_array = []
-    if pawn_color_white?(start_position, hash)
+    color = 'white' if there_is_white?(start_position, hash)
+    if color == 'white'
       adjusted_height_by_one = (start_position[0].to_i + 1).to_s
       adjusted_height_by_two = (start_position[0].to_i + 2).to_s
     else
@@ -19,18 +20,40 @@ class PossibleMoves
     if position_empty?(changed_height_by_one, hash) && position_empty?(changed_height_by_two, hash) && first_move?(start_position, hash)
       positions_array << changed_height_by_two 
     end
-    if pawn_color_white?(start_position, hash)
-      positions_array << diagonal_left if there_is_black?(diagonal_left, hash)
-      positions_array << diagonal_right if there_is_black?(diagonal_right, hash)
-    else
-      positions_array << diagonal_left if there_is_white?(diagonal_left, hash)
-      positions_array << diagonal_right if there_is_white?(diagonal_right, hash)
-    end
+    positions_array << diagonal_left if there_is_enemy?(diagonal_left, hash, color)
+    positions_array << diagonal_right if there_is_enemy?(diagonal_right, hash, color)
+
     positions_array
   end
 
   def possible_for_rook(start_position, hash)
-
+    positions_array = []
+    color = 'white' if there_is_white?(start_position, hash)
+    position_up = (start_position[0].to_i + 1).to_s + start_position[1]
+    loop do
+      positions_array << position_up if empty_or_enemy_there?(position_up, hash, color)
+      break if enemy_or_not_empty_there?(position_up, hash, color)
+      position_up = (position_up[0].to_i + 1).to_s + start_position[1]
+    end
+    position_down = (start_position[0].to_i - 1).to_s + start_position[1]
+    loop do
+      positions_array << position_down if empty_or_enemy_there?(position_down, hash, color)
+      break if enemy_or_not_empty_there?(position_down, hash, color)
+      position_down = (position_down[0].to_i - 1).to_s + start_position[1]
+    end
+    position_right = start_position[0] + (start_position[1].ord + 1).chr
+    loop do
+      positions_array << position_right if empty_or_enemy_there?(position_right, hash, color)
+      break if enemy_or_not_empty_there?(position_right, hash, color)
+      position_right = start_position[0] + (position_right[1].ord + 1).chr
+    end
+    position_left = start_position[0] + (start_position[1].ord - 1).chr
+    loop do
+      positions_array << position_left if empty_or_enemy_there?(position_left, hash, color)
+      break if enemy_or_not_empty_there?(position_left, hash, color)
+      position_left = start_position[0] + (position_left[1].ord - 1).chr
+    end
+    positions_array
   end
 
   def possible_for_knight(start_position, hash)
@@ -51,27 +74,26 @@ class PossibleMoves
 
   private
 
-  def pawn_color_white?(position, hash)
-    return true if hash[position] == '♙'
-    false
-  end
-
-  def not_beyond_board?(position, hash)
-    hash.has_key?(position)
-  end
-
   def position_empty?(position, hash)
     return true if hash[position] == ' '
     false
   end
 
   def first_move?(position, hash)
-    if pawn_color_white?(position, hash)
+    if there_is_white?(position, hash)
       return true if position[0] == '2'
     else
       return true if position[0] == '7'
     end
     false
+  end
+  
+  def there_is_enemy?(position, hash, color)
+    if color == 'white'
+      return there_is_black?(position, hash)
+    else
+      return there_is_white?(position, hash)
+    end
   end
 
   def there_is_black?(position, hash)
@@ -80,5 +102,13 @@ class PossibleMoves
 
   def there_is_white?(position, hash)
     hash[position] == '♔' || hash[position] == '♕' || hash[position] == '♖' || hash[position] == '♗' || hash[position] == '♘' || hash[position] == '♙'
+  end
+
+  def empty_or_enemy_there?(position, hash, color)
+    position_empty?(position, hash) || there_is_enemy?(position, hash, color)
+  end
+
+  def enemy_or_not_empty_there?(position, hash, color)
+    there_is_enemy?(position, hash, color) || !position_empty?(position, hash)
   end
 end
