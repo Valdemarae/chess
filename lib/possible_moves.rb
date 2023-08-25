@@ -17,7 +17,7 @@ class PossibleMoves
     diagonal_right = adjusted_height_by_one + (start_position[1].ord + 1).chr
 
     positions_array << changed_height_by_one if position_empty?(changed_height_by_one, hash)
-    if position_empty?(changed_height_by_one, hash) && position_empty?(changed_height_by_two, hash) && first_move?(start_position, hash)
+    if possible_double_for_pawn(start_position, changed_height_by_one, changed_height_by_two, hash)
       positions_array << changed_height_by_two 
     end
     positions_array << diagonal_left if there_is_enemy?(diagonal_left, hash, color)
@@ -104,6 +104,10 @@ class PossibleMoves
     hash[position] == '♔' || hash[position] == '♕' || hash[position] == '♖' || hash[position] == '♗' || hash[position] == '♘' || hash[position] == '♙'
   end
 
+  def possible_double_for_pawn(start_position, changed_height_by_one, changed_height_by_two, hash)
+    position_empty?(changed_height_by_one, hash) && position_empty?(changed_height_by_two, hash) && first_move?(start_position, hash)
+  end
+
   def empty_or_enemy_there?(position, hash, color)
     position_empty?(position, hash) || there_is_enemy?(position, hash, color)
   end
@@ -112,3 +116,6 @@ class PossibleMoves
     there_is_enemy?(position, hash, color) || !position_empty?(position, hash)
   end
 end
+
+p PossibleMoves.new.possible_for_pawn('6d', Board.new.board_hash)
+p PossibleMoves.new.possible_for_rook('5c', Board.new.board_hash)
