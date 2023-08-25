@@ -102,7 +102,7 @@ class PossibleMoves
   end
 
   def possible_for_queen(start_position, hash)
-
+    possible_for_bishop(start_position, hash) + possible_for_rook(start_position, hash)
   end
 
   def possible_for_king(start_position, hash)
