@@ -4,29 +4,27 @@ class PossibleMoves
   def possible_for_pawn(start_position, hash)
     positions_array = []
     if pawn_color_white?(start_position, hash)
-      one_up = (start_position[0].to_i + 1).to_s + start_position[1]
-      positions_array << one_up if position_empty?(one_up, hash)
-
-      two_up = (start_position[0].to_i + 2).to_s + start_position[1]
-      positions_array << two_up if position_empty?(one_up, hash) && position_empty?(two_up, hash) && first_move?(start_position, hash)
-
-      diagonal_up_left = (start_position[0].to_i + 1).to_s + (start_position[1].ord - 1).chr
-      positions_array << diagonal_up_left if there_is_black?(diagonal_up_left, hash)
-
-      diagonal_up_right = (start_position[0].to_i + 1).to_s + (start_position[1].ord + 1).chr
-      positions_array << diagonal_up_right if there_is_black?(diagonal_up_right, hash)
+      adjusted_height_by_one = (start_position[0].to_i + 1).to_s
+      adjusted_height_by_two = (start_position[0].to_i + 2).to_s
     else
-      one_down = (start_position[0].to_i - 1).to_s + start_position[1]
-      positions_array << one_down if position_empty?(one_down, hash)
+      adjusted_height_by_one = (start_position[0].to_i - 1).to_s
+      adjusted_height_by_two = (start_position[0].to_i - 2).to_s 
+    end
+    changed_height_by_one = adjusted_height_by_one + start_position[1]
+    changed_height_by_two = adjusted_height_by_two + start_position[1]
+    diagonal_left = adjusted_height_by_one + (start_position[1].ord - 1).chr
+    diagonal_right = adjusted_height_by_one + (start_position[1].ord + 1).chr
 
-      two_down = (start_position[0].to_i - 2).to_s + start_position[1]
-      positions_array << two_down if position_empty?(one_down, hash) && position_empty?(two_down, hash) && first_move?(start_position, hash)
-
-      diagonal_down_left = (start_position[0].to_i - 1).to_s + (start_position[1].ord - 1).chr
-      positions_array << diagonal_down_left if there_is_white?(diagonal_down_left, hash)
-
-      diagonal_down_right = (start_position[0].to_i - 1).to_s + (start_position[1].ord + 1).chr
-      positions_array << diagonal_down_right if there_is_white?(diagonal_down_right, hash)
+    positions_array << changed_height_by_one if position_empty?(changed_height_by_one, hash)
+    if position_empty?(changed_height_by_one, hash) && position_empty?(changed_height_by_two, hash) && first_move?(start_position, hash)
+      positions_array << changed_height_by_two 
+    end
+    if pawn_color_white?(start_position, hash)
+      positions_array << diagonal_left if there_is_black?(diagonal_left, hash)
+      positions_array << diagonal_right if there_is_black?(diagonal_right, hash)
+    else
+      positions_array << diagonal_left if there_is_white?(diagonal_left, hash)
+      positions_array << diagonal_right if there_is_white?(diagonal_right, hash)
     end
     positions_array
   end
@@ -84,5 +82,3 @@ class PossibleMoves
     hash[position] == '♔' || hash[position] == '♕' || hash[position] == '♖' || hash[position] == '♗' || hash[position] == '♘' || hash[position] == '♙'
   end
 end
-
-p PossibleMoves.new.possible_for_pawn('7d', Board.new.board_hash)
