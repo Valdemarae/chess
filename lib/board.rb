@@ -1,4 +1,6 @@
 class Board
+  attr_reader :board_hash
+
   def initialize
     @board_hash = create_board
   end
@@ -13,6 +15,12 @@ class Board
       puts i
     end
     puts '  a  b  c  d  e  f  g  h'
+  end
+
+  def update_board(start_position, end_position)
+    piece = @board_hash[start_position]
+    @board_hash[start_position] = ' '
+    @board_hash[end_position] = piece
   end
 
   private
