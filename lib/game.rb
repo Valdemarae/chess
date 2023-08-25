@@ -6,6 +6,9 @@ class Game
   def play
     print_introduction
     create_players
+    @board = Board.new
+    @hash = @board.board_hash
+    @board.print_board
   end
 
   private

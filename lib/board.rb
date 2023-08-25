@@ -6,15 +6,15 @@ class Board
   end
 
   def print_board
-    puts '  a  b  c  d  e  f  g  h'
+    puts '           a  b  c  d  e  f  g  h'
     8.downto(1) do |i|
-      print i
+      print '         ' + i.to_s
       for j in 'a'..'h' do
         print "[#{@board_hash[i.to_s + j]}]"
       end
       puts i
     end
-    puts '  a  b  c  d  e  f  g  h'
+    puts '           a  b  c  d  e  f  g  h'
   end
 
   def update_board(start_position, end_position)
