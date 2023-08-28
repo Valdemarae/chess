@@ -11,8 +11,9 @@ class Game
     @moves = PossibleMoves.new
     @board.print_board
     loop do
-      start_position = make_choice_start('white')
-      end_position = make_choice_end(start_position)
+      make_turn('white')
+
+      make_turn('black')
     end
   end
 
@@ -109,5 +110,13 @@ class Game
     else
       @moves.there_is_black?(position, @hash)
     end
+  end
+
+  def make_turn(color)
+    start_position = make_choice_start(color)
+    end_position = make_choice_end(start_position)
+    @board.update_board(start_position, end_position)
+    print_line
+    @board.print_board
   end
 end
