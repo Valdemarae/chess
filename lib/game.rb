@@ -12,14 +12,12 @@ class Game
     @board.print_board
     loop do
       make_turn('white')
-      check?()
       if game_over?()
         print_winner(@first_player.name)
         break 
       end
 
       make_turn('black')
-      check?()
       if game_over?()
         print_winner(@second_player.name)
         break
@@ -130,6 +128,7 @@ class Game
     pawn_promotion(color) if pawn_reached_top?()
     print_line
     @board.print_board
+    check?()
   end
 
   def game_over?
