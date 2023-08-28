@@ -12,8 +12,10 @@ class Game
     @board.print_board
     loop do
       make_turn('white')
+      break if game_over?()
 
       make_turn('black')
+      break if game_over?()
     end
   end
 
@@ -116,7 +118,12 @@ class Game
     start_position = make_choice_start(color)
     end_position = make_choice_end(start_position)
     @board.update_board(start_position, end_position)
+    @hash = @board.board_hash
     print_line
     @board.print_board
+  end
+
+  def game_over?
+    !(@hash.has_value?('♔') && @hash.has_value?('♚'))
   end
 end
