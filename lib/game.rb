@@ -1,3 +1,4 @@
+require 'yaml'
 require_relative 'board'
 require_relative 'possible_moves'
 require_relative 'player'
@@ -11,7 +12,8 @@ class Game
     @moves = PossibleMoves.new
     @board.print_board
     loop do
-      make_turn('white')
+      result = make_turn('white')
+      break if result == 'exit'
       if game_over?()
         print_winner(@first_player.name)
         break 
@@ -53,6 +55,11 @@ class Game
       if start_position == 'help'
         print_instructions(color)
         next
+      elsif start_position == 'save'
+        save_game
+        next
+      elsif start_position == 'exit'
+        break
       elsif valid_piece(start_position, color)
         if no_possible_moves?(start_position)
           puts "\e[31mChosen piece does not have possible moves. Try another one.\e[0m"
@@ -107,8 +114,13 @@ class Game
   def print_instructions(color = nil)
     puts "\n1. Input must contain number of row and character of column."
     puts '2. Input length must be exactly 2.'
-    puts "3. Chosen position must contain #{color} piece." if color
-    puts '3. Chosen position must be empty or contain enemy piece.' unless color 
+    if color
+      puts "3. Chosen position must contain #{color} piece." 
+      puts '4. Type \'save\' to save the game.'
+      puts "5. Type 'exit' to end the game. Be sure to save it to be able to continue playing next time."
+    else
+      puts '3. Chosen position must be empty or contain enemy piece.'
+    end
     puts "Position input examples: '5d', '1a', '8f'...\n\n"
   end
 
@@ -122,6 +134,7 @@ class Game
 
   def make_turn(color)
     start_position = make_choice_start(color)
+    return 'exit' if start_position == 'exit'
     end_position = make_choice_end(start_position)
     @board.update_board(start_position, end_position)
     @hash = @board.board_hash
@@ -205,4 +218,12 @@ class Game
     end
     false
   end 
+
+  def save_game
+    name = "#{@first_player.name} vs #{@second_player.name}"
+    data = YAML.dump ({name: name, board: @board, player1: @first_player, player2: @second_player})
+    File.open('saved_games/saved_data.yml', 'a') {|f| f.write data}
+    puts "\e[32mThe game has been saved and named as '#{name}'.\e[0m"
+    puts "\e[32mNow you can type 'exit' and continue the game next time.\e[0m"
+  end
 end
