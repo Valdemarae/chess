@@ -12,10 +12,18 @@ class Game
     @board.print_board
     loop do
       make_turn('white')
-      break if game_over?()
+      check?()
+      if game_over?()
+        print_winner(@first_player.name)
+        break 
+      end
 
       make_turn('black')
-      break if game_over?()
+      check?()
+      if game_over?()
+        print_winner(@second_player.name)
+        break
+      end
     end
   end
 
@@ -140,7 +148,10 @@ class Game
   def check?
     moves = get_all_pieces_possible_moves
     moves.each do |position|
-      return true if @hash[position] == '♔' || @hash[position] == '♚'
+      if @hash[position] == '♔' || @hash[position] == '♚'
+        puts "\e[31mCheck!\e[0m"
+        return true 
+      end
     end
   end
 
@@ -150,6 +161,7 @@ class Game
     positions.each do |position|
       return false unless moves.include? position
     end
+    puts "\e[31mCheckmate!\e[0m"
     true
   end
 
@@ -160,5 +172,9 @@ class Game
       moves.concat get_possible_moves_array(key)
     end
     moves
+  end
+
+  def print_winner(name)
+    puts "\e[31mGame over! #{name} won!\e[0m"
   end
 end
