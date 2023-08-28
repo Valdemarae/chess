@@ -24,6 +24,7 @@ class Game
       end
 
       make_turn('black')
+      break if result == 'exit'
       if game_over?()
         print_winner(@second_player.name)
         break
