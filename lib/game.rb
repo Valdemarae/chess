@@ -124,6 +124,41 @@ class Game
   end
 
   def game_over?
+    king_positions = []
+    @hash.each do |key, value|
+      if value == '♔' || value == '♚'
+        king_positions.push key
+      end
+    end
+    no_king_left?() || (checkmate?(king_positions[0]) || checkmate?(king_positions[1]))
+  end
+
+  def no_king_left?
     !(@hash.has_value?('♔') && @hash.has_value?('♚'))
+  end
+
+  def check?
+    moves = get_all_pieces_possible_moves
+    moves.each do |position|
+      return true if @hash[position] == '♔' || @hash[position] == '♚'
+    end
+  end
+
+  def checkmate?(position)
+    moves = get_all_pieces_possible_moves
+    positions = get_possible_moves_array(position) + [position]
+    positions.each do |position|
+      return false unless moves.include? position
+    end
+    true
+  end
+
+  def get_all_pieces_possible_moves
+    moves = []
+    @hash.each do |key, value|
+      next if value == ' '
+      moves.concat get_possible_moves_array(key)
+    end
+    moves
   end
 end
