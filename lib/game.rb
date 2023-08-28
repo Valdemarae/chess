@@ -11,7 +11,8 @@ class Game
     @moves = PossibleMoves.new
     @board.print_board
     loop do
-      make_choice('white')
+      start_position = make_choice_start('white')
+      end_position = make_choice_end(start_position)
     end
   end
 
@@ -33,7 +34,7 @@ class Game
     print_line
   end
 
-  def make_choice(color)
+  def make_choice_start(color)
     name = color == 'white' ? @first_player.name : @second_player.name
     puts "#{name}'s turn."
     start_position = nil
@@ -52,6 +53,24 @@ class Game
       end
       puts "\e[31mWrong input! Type 'help' for instructions if you need them.\e[0m"
     end
+    start_position
+  end
+
+  def make_choice_end(start_position)
+    end_position = nil
+    possible_moves = get_possible_moves_array(start_position)
+    loop do
+      print 'Choose position you want to go to: '
+      end_position = gets.chomp.downcase
+      if end_position == 'help'
+        print_instructions
+        next
+      elsif possible_moves.include?(end_position)
+        break
+      end
+      puts "\e[31mWrong input! Type 'help' for instructions if you need them.\e[0m"
+    end
+    end_position
   end
 
   def no_possible_moves?(position)
@@ -76,10 +95,11 @@ class Game
     end
   end
 
-  def print_instructions(color)
+  def print_instructions(color = nil)
     puts "\n1. Input must contain number of row and character of column."
     puts '2. Input length must be exactly 2.'
-    puts "3. Chosen position must contain #{color} piece."
+    puts "3. Chosen position must contain #{color} piece." if color
+    puts '3. Chosen position must be empty or contain enemy piece.' unless color 
     puts "Position input examples: '5d', '1a', '8f'...\n\n"
   end
 
