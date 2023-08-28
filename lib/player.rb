@@ -9,9 +9,9 @@ class Player
 
   def get_name(player_number)
     if player_number == 1
-      print 'White pieces player name: '
+      print 'White pieces player\'s name: '
     else
-      print 'Black pieces player name: '
+      print 'Black pieces player\'s name: '
     end
     gets.chomp
   end
