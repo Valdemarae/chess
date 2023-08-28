@@ -13,6 +13,13 @@ class Player
     else
       print 'Black pieces player\'s name: '
     end
-    gets.chomp
+    if player_number == 0
+      sleep 1
+      puts 'Computer'
+      sleep 1
+      return 'Computer'
+    else
+      gets.chomp
+    end
   end
 end

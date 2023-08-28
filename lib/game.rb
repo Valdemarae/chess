@@ -9,7 +9,12 @@ class Game
     if new_or_existing_game == 'existing'
       load_game
     else
-      create_players
+      enemy = choose_enemy
+      if enemy == 'Computer'
+        create_players(0)
+      else
+        create_players
+      end
       @board = Board.new
     end
     @hash = @board.board_hash
@@ -23,7 +28,7 @@ class Game
         break 
       end
 
-      make_turn('black')
+      result = make_turn('black')
       break if result == 'exit'
       if game_over?()
         print_winner(@second_player.name)
@@ -44,9 +49,13 @@ class Game
     puts "\033[1m\e[31m-----------------------------------------------\e[0m\033[0m"
   end
 
-  def create_players
+  def create_players(number = nil)
     @first_player = Player.new(1)
-    @second_player = Player.new(2)
+    unless number
+      @second_player = Player.new(2)
+    else
+      @second_player = Player.new(number)
+    end
     print_line
   end
 
@@ -282,5 +291,17 @@ class Game
     end
     print_line
     'existing' if result == 2
+  end
+
+  def choose_enemy
+    puts '[1] Play against a friend'
+    puts '[2] Play against computer'
+    answer = nil
+    loop do
+      print 'Choose number: '
+      answer = gets.chomp.to_i
+      break if answer.between?(1,2)
+    end
+    answer == 1 ? 'Friend' : 'Computer'
   end
 end
