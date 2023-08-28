@@ -23,6 +23,24 @@ class Board
     @board_hash[end_position] = piece
   end
 
+  def pawn_promotion(position, new_piece, color)
+    if new_piece == 'knight'
+      pieces = '♘♞'
+    elsif new_piece == 'queen'
+      pieces = '♕♛'
+    elsif new_piece == 'rook'
+      pieces = '♖♜'
+    elsif new_piece == 'bishop'
+      pieces = '♗♝'
+    end
+    if color == 'white'
+      piece = pieces[0]
+    else
+      piece = pieces[1]
+    end
+    @board_hash[position] = piece
+  end
+
   private
 
   def create_board

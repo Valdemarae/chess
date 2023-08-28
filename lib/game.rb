@@ -127,6 +127,7 @@ class Game
     end_position = make_choice_end(start_position)
     @board.update_board(start_position, end_position)
     @hash = @board.board_hash
+    pawn_promotion(color) if pawn_reached_top?()
     print_line
     @board.print_board
   end
@@ -158,8 +159,8 @@ class Game
   def checkmate?(position)
     moves = get_all_pieces_possible_moves
     positions = get_possible_moves_array(position) + [position]
-    positions.each do |position|
-      return false unless moves.include? position
+    positions.each do |key|
+      return false unless moves.include? key
     end
     puts "\e[31mCheckmate!\e[0m"
     true
@@ -177,4 +178,32 @@ class Game
   def print_winner(name)
     puts "\e[31mGame over! #{name} won!\e[0m"
   end
+
+  def pawn_promotion(color)
+    new_piece = nil
+    loop do
+      print "Pawn promotion! Choose what you would like it to be. Type 'queen', 'rook', 'bishop' or 'knight': "
+      new_piece = gets.chomp.downcase
+      break if new_piece == 'queen' || new_piece == 'rook' || new_piece == 'bishop' || new_piece == 'knight'
+      puts 'Wrong input! Try again!'
+    end
+    for i in 'a'..'h' do
+      if @hash['1' + i] == '♟'
+        position = '1' + i
+        break
+      elsif @hash['8' + i] == '♙'
+        position = '8' + i
+        break
+      end
+    end
+    @board.pawn_promotion(position, new_piece, color)
+    @hash = @board.board_hash
+  end
+
+  def pawn_reached_top?
+    for i in 'a'..'h' do
+      return true if @hash['1' + i] == '♟' || @hash['8' + i] == '♙'
+    end
+    false
+  end 
 end
