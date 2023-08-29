@@ -147,9 +147,14 @@ class Game
   end
 
   def make_turn(color)
-    start_position = make_choice_start(color)
-    return 'exit' if start_position == 'exit'
-    end_position = make_choice_end(start_position)
+    unless color == 'black' && @second_player.name == 'Computer'
+      start_position = make_choice_start(color)
+      return 'exit' if start_position == 'exit'
+      end_position = make_choice_end(start_position)
+    else
+      start_position = computer_makes_start_choice
+      end_position = computer_makes_end_choice(start_position)
+    end
     @board.update_board(start_position, end_position)
     @hash = @board.board_hash
     pawn_promotion(color) if pawn_reached_top?()
@@ -303,5 +308,44 @@ class Game
       break if answer.between?(1,2)
     end
     answer == 1 ? 'Friend' : 'Computer'
+  end
+
+  def computer_makes_start_choice
+    puts 'Computer\'s turn.'
+    pieces = []
+    @hash.each_key do |key|
+      pieces.push key if valid_piece(key, 'black')
+    end
+    pieces_that_can_beat_enemy = []
+    pieces.each do |piece|
+      moves = get_possible_moves_array(piece)
+      moves.each do |move|
+        if @moves.there_is_white?(move, @hash)
+          pieces_that_can_beat_enemy.push piece
+          break
+        end
+      end
+    end
+    unless pieces_that_can_beat_enemy.empty?
+      start_position = pieces_that_can_beat_enemy.sample
+    else
+      loop do
+        start_position = pieces.sample
+        break unless no_possible_moves?(start_position)
+      end
+    end
+    puts "It chooses piece: #{start_position}"
+    start_position
+  end
+
+  def computer_makes_end_choice(start_position)
+    moves = get_possible_moves_array(start_position)
+    moves_to_enemy_position = []
+    moves.each do |move|
+      moves_to_enemy_position.push move if @moves.there_is_white?(move, @hash)
+    end
+    end_position = moves_to_enemy_position.empty? ? moves.sample : moves_to_enemy_position.sample
+    puts "It goes to: #{end_position}"
+    end_position
   end
 end
