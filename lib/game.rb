@@ -338,7 +338,9 @@ class Game
         break unless no_possible_moves?(start_position)
       end
     end
-    puts "It chooses piece: #{start_position}"
+    print "It chooses piece: "
+    sleep 1
+    puts start_position
     start_position
   end
 
@@ -349,7 +351,10 @@ class Game
       moves_to_enemy_position.push move if @moves.there_is_white?(move, @hash)
     end
     end_position = moves_to_enemy_position.empty? ? moves.sample : moves_to_enemy_position.sample
-    puts "It goes to: #{end_position}"
+    print "It goes to: "
+    sleep 1
+    puts end_position
+    sleep 1
     end_position
   end
 end
