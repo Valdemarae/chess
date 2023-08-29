@@ -212,11 +212,15 @@ class Game
 
   def pawn_promotion(color)
     new_piece = nil
-    loop do
-      print "Pawn promotion! Choose what you would like it to be. Type 'queen', 'rook', 'bishop' or 'knight': "
-      new_piece = gets.chomp.downcase
-      break if new_piece == 'queen' || new_piece == 'rook' || new_piece == 'bishop' || new_piece == 'knight'
-      puts 'Wrong input! Try again!'
+    if color == 'black' && @second_player.name == 'Computer'
+      new_piece = 'queen'
+    else
+      loop do
+        print "Pawn promotion! Choose what you would like it to be. Type 'queen', 'rook', 'bishop' or 'knight': "
+        new_piece = gets.chomp.downcase
+        break if new_piece == 'queen' || new_piece == 'rook' || new_piece == 'bishop' || new_piece == 'knight'
+        puts 'Wrong input! Try again!'
+      end
     end
     for i in 'a'..'h' do
       if @hash['1' + i] == '♟'
