@@ -1,4 +1,4 @@
-class PossibleMoves
+module PossibleMoves
   def possible_for_pawn(start_position, hash)
     positions_array = []
     color = 'white' if there_is_white?(start_position, hash)
@@ -126,8 +126,6 @@ class PossibleMoves
     hash[position] == '♔' || hash[position] == '♕' || hash[position] == '♖' || hash[position] == '♗' || hash[position] == '♘' || hash[position] == '♙'
   end
 
-  private
-
   def position_empty?(position, hash)
     return true if hash[position] == ' '
     false
@@ -160,5 +158,54 @@ class PossibleMoves
 
   def enemy_or_not_empty_there?(position, hash, color)
     there_is_enemy?(position, hash, color) || !position_empty?(position, hash)
+  end
+
+  def no_possible_moves?(position)
+    array_of_moves = get_possible_moves_array(position)
+    array_of_moves.empty?
+  end
+
+  def get_possible_moves_array(position)
+    piece = @hash[position]
+    if piece == '♙' || piece == '♟︎'
+      return possible_for_pawn(position, @hash)
+    elsif piece == '♘' || piece == '♞'
+      return possible_for_knight(position, @hash)
+    elsif piece == '♗' || piece == '♝'
+      return possible_for_bishop(position, @hash)
+    elsif piece == '♖' || piece == '♜'
+      return possible_for_rook(position, @hash)
+    elsif piece == '♕' || piece == '♛'
+      return possible_for_queen(position, @hash)
+    elsif piece == '♔' || piece == '♚'
+      return possible_for_king(position, @hash)
+    end
+  end
+
+  def valid_piece(position, color)
+    if color == 'white'
+      there_is_white?(position, @hash)
+    else
+      there_is_black?(position, @hash)
+    end
+  end
+
+  def get_all_pieces_possible_moves(position = nil)
+    moves = []
+    if position
+      color = 'white' if there_is_white?(position, @hash)
+    end
+    @hash.each do |key, value|
+      next if value == ' '
+      if position
+        if color == 'white'
+          next if there_is_white?(key, @hash)
+        else
+          next if there_is_black?(key, @hash)
+        end
+      end
+      moves.concat get_possible_moves_array(key)
+    end
+    moves
   end
 end
