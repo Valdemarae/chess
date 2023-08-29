@@ -160,7 +160,7 @@ class Game
     pawn_promotion(color) if pawn_reached_top?()
     print_line
     @board.print_board
-    check?()
+    puts "\e[31mCheck!\e[0m" if check?()
   end
 
   def game_over?
@@ -181,10 +181,10 @@ class Game
     moves = get_all_pieces_possible_moves
     moves.each do |position|
       if @hash[position] == '♔' || @hash[position] == '♚'
-        puts "\e[31mCheck!\e[0m"
         return true 
       end
     end
+    false
   end
 
   def checkmate?(position)
@@ -316,27 +316,31 @@ class Game
 
   def computer_makes_start_choice
     puts 'Computer\'s turn.'
-    pieces = []
-    @hash.each_key do |key|
-      pieces.push key if valid_piece(key, 'black')
-    end
-    pieces_that_can_beat_enemy = []
-    pieces.each do |piece|
-      moves = get_possible_moves_array(piece)
-      moves.each do |move|
-        if @moves.there_is_white?(move, @hash)
-          pieces_that_can_beat_enemy.push piece
-          break
+    unless check?()
+      pieces = []
+      @hash.each_key do |key|
+        pieces.push key if valid_piece(key, 'black')
+      end
+      pieces_that_can_beat_enemy = []
+      pieces.each do |piece|
+        moves = get_possible_moves_array(piece)
+        moves.each do |move|
+          if @moves.there_is_white?(move, @hash)
+            pieces_that_can_beat_enemy.push piece
+            break
+          end
         end
       end
-    end
-    unless pieces_that_can_beat_enemy.empty?
-      start_position = pieces_that_can_beat_enemy.sample
-    else
-      loop do
-        start_position = pieces.sample
-        break unless no_possible_moves?(start_position)
+      unless pieces_that_can_beat_enemy.empty?
+        start_position = pieces_that_can_beat_enemy.sample
+      else
+        loop do
+          start_position = pieces.sample
+          break unless no_possible_moves?(start_position)
+        end
       end
+    else
+      start_position = @hash.key('♚')
     end
     print "It chooses piece: "
     sleep 1
@@ -346,6 +350,10 @@ class Game
 
   def computer_makes_end_choice(start_position)
     moves = get_possible_moves_array(start_position)
+    if check?()
+      all_pieces_moves = get_all_pieces_possible_moves(start_position)
+      moves.filter! {|move| !all_pieces_moves.include?(move)}
+    end
     moves_to_enemy_position = []
     moves.each do |move|
       moves_to_enemy_position.push move if @moves.there_is_white?(move, @hash)
