@@ -188,7 +188,7 @@ class Game
   end
 
   def checkmate?(position)
-    moves = get_all_pieces_possible_moves
+    moves = get_all_pieces_possible_moves(position)
     positions = get_possible_moves_array(position) + [position]
     positions.each do |key|
       return false unless moves.include? key
@@ -197,10 +197,10 @@ class Game
     true
   end
 
-  def get_all_pieces_possible_moves
+  def get_all_pieces_possible_moves(position = nil)
     moves = []
     @hash.each do |key, value|
-      next if value == ' '
+      next if value == ' ' || key == position
       moves.concat get_possible_moves_array(key)
     end
     moves
