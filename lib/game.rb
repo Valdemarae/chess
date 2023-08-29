@@ -199,8 +199,18 @@ class Game
 
   def get_all_pieces_possible_moves(position = nil)
     moves = []
+    if position
+      color = 'white' if @moves.there_is_white?(position, @hash)
+    end
     @hash.each do |key, value|
-      next if value == ' ' || key == position
+      next if value == ' '
+      if position
+        if color == 'white'
+          next if @moves.there_is_white?(key, @hash)
+        else
+          next if @moves.there_is_black?(key, @hash)
+        end
+      end
       moves.concat get_possible_moves_array(key)
     end
     moves
