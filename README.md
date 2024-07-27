@@ -1,5 +1,5 @@
 # Chess
-Playable here: https://replit.com/@Valdemarae/chess
+Playable here: https://replit.com/@Valdemarae/chess.
 
 # Project overview
 1. Game accepts only valid positions that pieces can go to.
